@@ -58,7 +58,7 @@ body {
 
 .nav-links a.contact {
     background-color: #000;
-    color: #e0cd67;
+    color: #e7bd6f;
     border: 2px solid #000;
 }
 
@@ -80,8 +80,13 @@ body {
 }
 
 .hero h1 {
+    font-family: "Josefin Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
     font-size: 3rem;
     margin-bottom: 1rem;
+    color: #e7bd6f;
 }
 
 .hero p {
@@ -95,7 +100,7 @@ body {
 .cta-button {
     display: inline-block;
     background-color: #000;
-    color: #e0cd67;
+    color: #e7bd6f;
     padding: 1rem 2rem;
     text-decoration: none;
     border-radius: 5px;
@@ -106,7 +111,7 @@ body {
 
 .cta-button:hover {
     background-color: rgba(0, 0, 0, 0.5);
-    color: #e0cd67;
+    color: #e7bd6f;
     border: 2px solid #000;
 }
 
@@ -118,8 +123,60 @@ body {
 }
 
 .team-intro-content {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.team-intro-left, .team-intro-right {
+    flex: 0 0 200px;
+    text-align: center;
+}
+
+.team-intro-left {
+    text-align: center;
+}
+
+.team-intro-right {
+    text-align: center;
+}
+
+.team-intro-center {
+    flex: 1;
+    text-align: center;
+}
+
+.team-headshot {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid #000;
+}
+
+.team-caption {
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.team-name {
+    color: #333;
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0 0 0.1rem 0;
+}
+
+.team-title {
+    color: #666;
+    font-size: 0.8rem;
+    margin: 0;
 }
 
 .team-intro h2 {
@@ -141,7 +198,7 @@ body {
 .team-button {
     display: inline-block;
     background-color: #000;
-    color: #e0cd67;
+    color: #e7bd6f;
     padding: 1rem 2rem;
     text-decoration: none;
     border-radius: 5px;
@@ -194,12 +251,129 @@ body {
 }
 
 .feature h3 {
-    color: #e0cd67;
+    color: #e7bd6f;
     margin-bottom: 1rem;
 }
 
 .feature p {
     color: #fff;
+}
+
+/* Property Closings Preview Section */
+.closings-preview {
+    background-color: #f8f9fa;
+    padding: 4rem 2rem;
+}
+
+.closings-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.closings-preview h2 {
+    color: #000;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+}
+
+.closings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.closing-card {
+    background-color: #fff;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.closing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.closing-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.closing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.closing-header h3 {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.closing-value {
+    background-color: #000;
+    color: #e7bd6f;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.closing-card p {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    padding: 0 1.5rem;
+}
+
+.closing-details {
+    display: flex;
+    justify-content: space-between;
+    color: #888;
+    font-size: 0.9rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.closing-date {
+    font-weight: 500;
+}
+
+.closing-type {
+    font-style: italic;
+}
+
+.closings-button-container {
+    text-align: center;
+}
+
+.closings-button {
+    display: inline-block;
+    background-color: #000;
+    color: #e7bd6f;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 2px solid #000;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.closings-button:hover {
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #000;
 }
 
 /* Footer */
