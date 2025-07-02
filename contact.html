@@ -3,305 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFG - Contact Us</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        /* Navigation Bar */
-        .navbar {
-            background-color: #2c3e50;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #ecf0f1;
-            text-decoration: none;
-        }
-
-        .logo:hover {
-            color: #3498db;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #ecf0f1;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .nav-links a.contact {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .nav-links a.contact:hover {
-            background-color: #c0392b;
-        }
-
-        /* Main Content */
-        .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 3rem 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .content {
-            padding: 3rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .contact-intro {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .contact-intro h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-
-        .contact-intro p {
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        .contact-form {
-            background-color: #f8f9fa;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .contact-form h3 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .submit-btn {
-            background-color: #3498db;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-
-        .submit-btn:hover {
-            background-color: #2980b9;
-        }
-
-        .contact-info {
-            background-color: #f8f9fa;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .contact-info h3 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: white;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .info-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            font-weight: bold;
-        }
-
-        .info-content h4 {
-            color: #2c3e50;
-            margin-bottom: 0.25rem;
-        }
-
-        .info-content p {
-            color: #666;
-            margin: 0;
-        }
-
-        .office-locations {
-            margin-top: 3rem;
-        }
-
-        .office-locations h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-
-        .locations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .location-card {
-            background-color: #f8f9fa;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .location-card h3 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
-
-        .location-card p {
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Footer */
-        .footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .page-header h1 {
-                font-size: 2rem;
-            }
-
-            .contact-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .locations-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>FCG - Contact Us</title>
+    <link rel="stylesheet" href="contact.css">
 </head>
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo-container">
-            <a href="index.html" class="logo">CFG</a>
+            <a href="index.html">
+                <img src="CFGlogoSmall.png" alt="FCG Logo" class="logo">
+            </a>
         </div>
         <ul class="nav-links">
             <li><a href="about.html">About</a></li>
@@ -321,13 +32,13 @@
     <main class="content">
         <div class="contact-intro">
             <h2>Let's Start a Conversation</h2>
-            <p>Ready to take your business to the next level? Our team is here to help. Fill out the form below or reach out to us directly. We'll get back to you within 24 hours.</p>
+            <p>Ready to take your business to the next level? Our team is here to help. Reach out to us through any of the channels below, and we'll get back to you promptly.</p>
         </div>
 
         <div class="contact-container">
             <div class="contact-form">
                 <h3>Send Us a Message</h3>
-                <form action="#" method="POST">
+                <form>
                     <div class="form-group">
                         <label for="name">Full Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -352,10 +63,10 @@
                         <label for="service">Service Interest</label>
                         <select id="service" name="service">
                             <option value="">Select a service</option>
-                            <option value="business-consulting">Business Consulting</option>
-                            <option value="mergers-acquisitions">Mergers & Acquisitions</option>
-                            <option value="strategic-planning">Strategic Planning</option>
-                            <option value="financial-advisory">Financial Advisory</option>
+                            <option value="consulting">Business Consulting</option>
+                            <option value="strategy">Strategic Planning</option>
+                            <option value="operations">Operations Optimization</option>
+                            <option value="technology">Technology Solutions</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -371,70 +82,100 @@
 
             <div class="contact-info">
                 <h3>Get in Touch</h3>
+                
                 <div class="info-item">
-                    <div class="info-icon">📧</div>
+                    <div class="info-icon">📍</div>
                     <div class="info-content">
-                        <h4>Email</h4>
-                        <p>info@cfg.com</p>
+                        <h4>Office Address</h4>
+                        <p>123 Business Ave, Suite 100<br>
+                        New York, NY 10001<br>
+                        United States</p>
                     </div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="info-icon">📞</div>
                     <div class="info-content">
                         <h4>Phone</h4>
                         <p>+1 (555) 123-4567</p>
+                        <p>+1 (555) 987-6543</p>
                     </div>
                 </div>
-                
+
                 <div class="info-item">
-                    <div class="info-icon">📍</div>
+                    <div class="info-icon">✉️</div>
                     <div class="info-content">
-                        <h4>Main Office</h4>
-                        <p>123 Business Ave, Suite 100<br>New York, NY 10001</p>
+                        <h4>Email</h4>
+                        <p>info@cfg.com</p>
+                        <p>support@cfg.com</p>
                     </div>
                 </div>
-                
+
                 <div class="info-item">
-                    <div class="info-icon">⏰</div>
+                    <div class="info-icon">🕒</div>
                     <div class="info-content">
                         <h4>Business Hours</h4>
-                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 2:00 PM</p>
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                        <p>Saturday: 10:00 AM - 2:00 PM</p>
+                        <p>Sunday: Closed</p>
+                    </div>
+                </div>
+
+                <div class="social-links-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link" title="LinkedIn">LinkedIn</a>
+                        <a href="#" class="social-link" title="Twitter">Twitter</a>
+                        <a href="#" class="social-link" title="Facebook">Facebook</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="office-locations">
-            <h2>Our Office Locations</h2>
-            <div class="locations-grid">
-                <div class="location-card">
-                    <h3>New York</h3>
-                    <p>123 Business Ave, Suite 100</p>
-                    <p>New York, NY 10001</p>
-                    <p>+1 (555) 123-4567</p>
-                </div>
-                
-                <div class="location-card">
-                    <h3>Los Angeles</h3>
-                    <p>456 Corporate Blvd, Suite 200</p>
-                    <p>Los Angeles, CA 90210</p>
-                    <p>+1 (555) 234-5678</p>
-                </div>
-                
-                <div class="location-card">
-                    <h3>Chicago</h3>
-                    <p>789 Financial District, Suite 300</p>
-                    <p>Chicago, IL 60601</p>
-                    <p>+1 (555) 345-6789</p>
-                </div>
+        <div class="map-section">
+            <h3>Find Us</h3>
+            <div class="map-placeholder">
+                <p>Interactive map would be embedded here</p>
+                <p>📍 123 Business Ave, Suite 100, New York, NY 10001</p>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2024 CFG. All rights reserved.</p>
+        <div class="footer-content">
+            <div class="footer-section footer-logo">
+                <img src="FortuneCapitalGroupLogo.jpg" alt="Fortune Capital Group Logo" class="footer-logo-img">
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Our Team</a></li>
+                    <li><a href="closings.html">Closed Deals</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/company/fortunecapital-group/" title="LinkedIn" target="_blank">in</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Office Location</h3>
+                <p>123 Business Ave, Suite 100<br>
+                New York, NY 10001<br>
+                United States</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 FCG. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html> 
