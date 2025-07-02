@@ -333,4 +333,15 @@ body {
     .action-buttons {
         flex-direction: column;
     }
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
 } 

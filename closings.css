@@ -291,6 +291,7 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
+    align-items: flex-start;
 }
 
 .footer-section h3 {
@@ -302,13 +303,14 @@ body {
 
 .footer-logo {
     display: flex;
-    align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .footer-logo-img {
-    height: 48px;
+    height: 72px;
     width: auto;
+    margin-top: 12px;
 }
 
 .footer-section ul {
