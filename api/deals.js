@@ -14,12 +14,8 @@ const storage = multer.diskStorage({
         cb(null, '/tmp');
     },
     filename: function (req, file, cb) {
-        // Preserve original filename but add timestamp to ensure uniqueness
-        const timestamp = Date.now();
-        const originalName = path.parse(file.originalname).name;
-        const extension = path.extname(file.originalname);
-        const safeName = originalName.replace(/[^a-zA-Z0-9]/g, '_'); // Replace special chars with underscores
-        cb(null, `${safeName}_${timestamp}${extension}`);
+        // Keep the original filename exactly as uploaded
+        cb(null, file.originalname);
     }
 });
 
