@@ -9,7 +9,24 @@ module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'application/json');
 
+    // First, let's test if the endpoint is working at all
+    console.log('Test endpoint called');
+    
     try {
+        // Check if MongoDB URI is configured
+        if (!process.env.MONGODB_URI) {
+            return res.json({
+                status: 'warning',
+                message: 'API endpoint working, but MONGODB_URI not configured',
+                timestamp: new Date().toISOString(),
+                nextSteps: [
+                    'Complete MongoDB Atlas setup',
+                    'Add MONGODB_URI to Vercel environment variables',
+                    'Redeploy the application'
+                ]
+            });
+        }
+
         console.log('Testing MongoDB connection...');
         
         // Test MongoDB connection
