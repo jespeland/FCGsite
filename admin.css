@@ -315,33 +315,3 @@ body {
     background-color: #8e44ad;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    #dealForm {
-        grid-template-columns: 1fr;
-    }
-
-    #dealsTable {
-        font-size: 0.9rem;
-    }
-
-    #dealsTable th,
-    #dealsTable td {
-        padding: 0.5rem;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-    }
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-    align-items: flex-start;
-} 
