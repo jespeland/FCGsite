@@ -18,7 +18,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #000000, #888888);
+    padding: 40px;
+    border-radius: 12px;
 }
 
 #loginForm {
@@ -313,5 +315,15 @@ body {
 
 #exportBtn:hover {
     background-color: #8e44ad;
+}
+
+.footer-quick-links ul li:last-child {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .footer-quick-links ul li:last-child {
+        display: list-item;
+    }
 }
 
