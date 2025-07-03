@@ -59,7 +59,8 @@
         <div class="contact-container">
             <div class="contact-form">
                 <h3>Send Us a Message</h3>
-                <form>
+                <div id="form-success-message" style="display:none; color: green; text-align: center; font-weight: bold; margin-bottom: 1rem;">Message Sent</div>
+                <form id="contactForm" action="https://formspree.io/f/xqabjwnr" method="POST">
                     <div class="form-group">
                         <label for="name">Full Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -139,5 +140,32 @@
         <p>&copy; 2025 Fortune Capital Group. All rights reserved.</p>
     </div>
 </footer>
+<script>
+// Contact form success message
+const contactForm = document.getElementById('contactForm');
+const formSuccessMessage = document.getElementById('form-success-message');
+if (contactForm) {
+  contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(contactForm);
+    fetch(contactForm.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        contactForm.style.display = 'none';
+        formSuccessMessage.style.display = 'block';
+      } else {
+        response.json().then(data => {
+          alert(data.error || 'There was a problem submitting your form.');
+        });
+      }
+    }).catch(() => {
+      alert('There was a problem submitting your form.');
+    });
+  });
+}
+</script>
 </body>
 </html> 
