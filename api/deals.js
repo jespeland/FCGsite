@@ -31,10 +31,22 @@ const upload = multer({
 // Helper to read deals from JSON file
 function readDeals() {
     try {
-        const dataPath = path.join(process.cwd(), 'deals.json');
-        if (!fs.existsSync(dataPath)) return [];
-        const data = fs.readFileSync(dataPath, 'utf-8');
-        return JSON.parse(data || '[]');
+        // Try multiple possible paths for the deals.json file
+        const possiblePaths = [
+            path.join(process.cwd(), 'deals.json'),
+            path.join(__dirname, '..', 'deals.json'),
+            './deals.json'
+        ];
+        
+        for (const dataPath of possiblePaths) {
+            if (fs.existsSync(dataPath)) {
+                const data = fs.readFileSync(dataPath, 'utf-8');
+                return JSON.parse(data || '[]');
+            }
+        }
+        
+        // If file doesn't exist, return empty array
+        return [];
     } catch (error) {
         console.error('Error reading deals:', error);
         return [];
@@ -44,6 +56,7 @@ function readDeals() {
 // Helper to write deals to JSON file
 function writeDeals(deals) {
     try {
+        // Use the same path as readDeals
         const dataPath = path.join(process.cwd(), 'deals.json');
         fs.writeFileSync(dataPath, JSON.stringify(deals, null, 2));
         return true;
@@ -66,29 +79,37 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // Get the path from the request
+        const requestPath = req.url || req.path || '';
+        console.log('Request:', req.method, requestPath);
+        
         // Handle different API endpoints
-        if (req.method === 'GET' && req.url === '/api/deals') {
+        if (req.method === 'GET' && (requestPath === '/api/deals' || requestPath === '/deals')) {
             const deals = readDeals();
+            console.log('Returning deals:', deals.length);
             res.json(deals);
             return;
         }
 
-        if (req.method === 'POST' && req.url === '/api/deals') {
+        if (req.method === 'POST' && (requestPath === '/api/deals' || requestPath === '/deals')) {
+            console.log('Adding new deal:', req.body);
             const deals = readDeals();
             const newDeal = req.body;
             newDeal.id = deals.length ? Math.max(...deals.map(d => d.id)) + 1 : 1;
             deals.push(newDeal);
             
             if (writeDeals(deals)) {
+                console.log('Deal saved successfully');
                 res.status(201).json(newDeal);
             } else {
+                console.error('Failed to save deal');
                 res.status(500).json({ error: 'Failed to save deal' });
             }
             return;
         }
 
-        if (req.method === 'DELETE' && req.url.startsWith('/api/deals/')) {
-            const id = parseInt(req.url.split('/').pop(), 10);
+        if (req.method === 'DELETE' && (requestPath.startsWith('/api/deals/') || requestPath.startsWith('/deals/'))) {
+            const id = parseInt(requestPath.split('/').pop(), 10);
             let deals = readDeals();
             const initialLength = deals.length;
             deals = deals.filter(d => d.id !== id);
@@ -107,7 +128,7 @@ module.exports = async (req, res) => {
         }
 
         // Handle image upload
-        if (req.method === 'POST' && req.url === '/api/upload-image') {
+        if (req.method === 'POST' && (requestPath === '/api/upload-image' || requestPath === '/upload-image')) {
             upload.single('image')(req, res, (err) => {
                 if (err) {
                     res.status(400).json({ error: err.message });
@@ -119,8 +140,6 @@ module.exports = async (req, res) => {
                     return;
                 }
                 
-                // For Vercel, we'll return the file info but note that files are temporary
-                // In a real app, you'd upload to a cloud storage service like AWS S3
                 res.json({ 
                     success: true, 
                     imagePath: 'ClosingPhotos/' + req.file.filename,
@@ -132,10 +151,10 @@ module.exports = async (req, res) => {
         }
 
         // Default response for unknown endpoints
-        res.status(404).json({ error: 'Endpoint not found' });
+        res.status(404).json({ error: 'Endpoint not found', path: requestPath, method: req.method });
 
     } catch (error) {
         console.error('API Error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 }; 
