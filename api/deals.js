@@ -14,8 +14,12 @@ const storage = multer.diskStorage({
         cb(null, '/tmp');
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        // Preserve original filename but add timestamp to ensure uniqueness
+        const timestamp = Date.now();
+        const originalName = path.parse(file.originalname).name;
+        const extension = path.extname(file.originalname);
+        const safeName = originalName.replace(/[^a-zA-Z0-9]/g, '_'); // Replace special chars with underscores
+        cb(null, `${safeName}_${timestamp}${extension}`);
     }
 });
 
@@ -165,7 +169,7 @@ module.exports = async (req, res) => {
             return;
         }
 
-        // Handle image upload
+                // Handle image upload
         if (req.method === 'POST' && (requestPath === '/api/upload-image' || requestPath === '/upload-image')) {
             upload.single('image')(req, res, (err) => {
                 if (err) {
@@ -178,10 +182,29 @@ module.exports = async (req, res) => {
                     return;
                 }
                 
+                // Clean up old temporary files (older than 1 hour)
+                const fs = require('fs');
+                const tmpDir = '/tmp';
+                try {
+                    const files = fs.readdirSync(tmpDir);
+                    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+                    
+                    files.forEach(file => {
+                        const filePath = path.join(tmpDir, file);
+                        const stats = fs.statSync(filePath);
+                        if (stats.mtime.getTime() < oneHourAgo) {
+                            fs.unlinkSync(filePath);
+                        }
+                    });
+                } catch (cleanupError) {
+                    console.log('Cleanup error (non-critical):', cleanupError.message);
+                }
+                
                 res.json({ 
                     success: true, 
                     imagePath: 'ClosingPhotos/' + req.file.filename,
                     filename: req.file.filename,
+                    originalName: req.file.originalname,
                     note: 'File uploaded to temporary storage'
                 });
             });
