@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 
 // MongoDB connection string - you'll need to replace this with your actual connection string
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<password>@fcgclosings.ir3zihw.mongodb.net/?retryWrites=true&w=majority';
 const DATABASE_NAME = 'fcg-website';
 const COLLECTION_NAME = 'deals';
 
