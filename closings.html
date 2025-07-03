@@ -178,7 +178,7 @@
 
             dealsGrid.innerHTML = deals.map(deal => `
                 <div class="closing-card">
-                    <img src="${deal.image || 'headshotPlaceholder.jpg'}" alt="${deal.title}" class="closing-image">
+                    <img src="${deal.image || 'headshotPlaceholder.jpg'}" alt="${deal.title}" class="closing-image" onerror="this.src='headshotPlaceholder.jpg'">
                     <div class="closing-header">
                         <h3>${deal.title}</h3>
                         <span class="closing-value">${deal.value}</span>

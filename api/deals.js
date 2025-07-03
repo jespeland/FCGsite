@@ -7,20 +7,9 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<passwor
 const DATABASE_NAME = 'fcg-website';
 const COLLECTION_NAME = 'deals';
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // In Vercel, we'll use /tmp for temporary storage
-        cb(null, '/tmp');
-    },
-    filename: function (req, file, cb) {
-        // Keep the original filename exactly as uploaded
-        cb(null, file.originalname);
-    }
-});
-
+// Configure multer for file uploads (memory storage since we can't write to disk in Vercel)
 const upload = multer({ 
-    storage: storage,
+    storage: multer.memoryStorage(),
     fileFilter: function (req, file, cb) {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -165,7 +154,7 @@ module.exports = async (req, res) => {
             return;
         }
 
-                // Handle image upload
+        // Handle image upload
         if (req.method === 'POST' && (requestPath === '/api/upload-image' || requestPath === '/upload-image')) {
             upload.single('image')(req, res, (err) => {
                 if (err) {
@@ -178,30 +167,16 @@ module.exports = async (req, res) => {
                     return;
                 }
                 
-                // Clean up old temporary files (older than 1 hour)
-                const fs = require('fs');
-                const tmpDir = '/tmp';
-                try {
-                    const files = fs.readdirSync(tmpDir);
-                    const oneHourAgo = Date.now() - (60 * 60 * 1000);
-                    
-                    files.forEach(file => {
-                        const filePath = path.join(tmpDir, file);
-                        const stats = fs.statSync(filePath);
-                        if (stats.mtime.getTime() < oneHourAgo) {
-                            fs.unlinkSync(filePath);
-                        }
-                    });
-                } catch (cleanupError) {
-                    console.log('Cleanup error (non-critical):', cleanupError.message);
-                }
+                // For now, we'll use a placeholder image since Vercel can't serve uploaded files
+                // In production, you should use a cloud storage service like Cloudinary
+                const imagePath = 'headshotPlaceholder.jpg';
                 
                 res.json({ 
                     success: true, 
-                    imagePath: 'ClosingPhotos/' + req.file.filename,
-                    filename: req.file.filename,
+                    imagePath: imagePath,
+                    filename: req.file.originalname,
                     originalName: req.file.originalname,
-                    note: 'File uploaded to temporary storage'
+                    note: 'Image uploaded but using placeholder. For production, implement cloud storage like Cloudinary.'
                 });
             });
             return;
