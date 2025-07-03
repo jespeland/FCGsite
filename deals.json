@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "TechCorp Acquisition",
+    "value": "$150M",
+    "industry": "Technology",
+    "date": "Q4 2023",
+    "duration": "6 months",
+    "description": "Successfully facilitated the acquisition of TechCorp by a leading private equity firm, resulting in significant value creation for all stakeholders.",
+    "image": "ClosingPhotos/multifamily.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Manufacturing Merger",
+    "value": "$75M",
+    "industry": "Manufacturing",
+    "date": "Q3 2023",
+    "duration": "8 months",
+    "description": "Orchestrated a strategic merger between two manufacturing companies, creating synergies and expanding market presence.",
+    "image": "ClosingPhotos/officebuilding.jpeg"
+  },
+  {
+    "id": 3,
+    "title": "Healthcare Partnership",
+    "value": "$200M",
+    "industry": "Healthcare",
+    "date": "Q2 2023",
+    "duration": "10 months",
+    "description": "Facilitated a strategic partnership between healthcare providers, improving patient care and operational efficiency.",
+    "image": "ClosingPhotos/retailcenter.jpg"
+  }
+]

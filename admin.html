@@ -91,6 +91,10 @@
                     <label for="dealDescription">Description *</label>
                     <textarea id="dealDescription" name="dealDescription" rows="4" required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="dealImage">Image</label>
+                    <input type="file" id="dealImage" name="dealImage" accept="image/*">
+                </div>
                 <div id="formActions">
                     <button type="submit" id="saveBtn">Save Deal</button>
                     <button type="button" id="cancelBtn" onclick="closeModal()">Cancel</button>
@@ -139,38 +143,70 @@
     </footer>
 
     <script>
-        // Sample data - in a real application, this would come from a database
-        let deals = [
-            {
-                id: 1,
-                title: "TechCorp Acquisition",
-                value: "$150M",
-                industry: "Technology",
-                date: "Q4 2023",
-                duration: "6 months",
-                description: "Successfully facilitated the acquisition of TechCorp by a leading private equity firm, resulting in significant value creation for all stakeholders."
-            },
-            {
-                id: 2,
-                title: "Manufacturing Merger",
-                value: "$75M",
-                industry: "Manufacturing",
-                date: "Q3 2023",
-                duration: "8 months",
-                description: "Orchestrated a strategic merger between two manufacturing companies, creating synergies and expanding market presence."
-            },
-            {
-                id: 3,
-                title: "Healthcare Partnership",
-                value: "$200M",
-                industry: "Healthcare",
-                date: "Q2 2023",
-                duration: "10 months",
-                description: "Facilitated a strategic partnership between healthcare providers, improving patient care and operational efficiency."
-            }
-        ];
-
+        // API base URL - works for both local development and Vercel deployment
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3001/api' 
+            : `${window.location.origin}/api`;
+        
+        // Deals data will be loaded from the backend
+        let deals = [];
         let currentEditId = null;
+
+        // API functions
+        async function fetchDeals() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/deals`);
+                if (!response.ok) throw new Error('Failed to fetch deals');
+                deals = await response.json();
+                return deals;
+            } catch (error) {
+                console.error('Error fetching deals:', error);
+                alert('Failed to load deals. Please check if the server is running.');
+                return [];
+            }
+        }
+
+        async function addDeal(dealData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/deals`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dealData)
+                });
+                if (!response.ok) throw new Error('Failed to add deal');
+                return await response.json();
+            } catch (error) {
+                console.error('Error adding deal:', error);
+                alert('Failed to add deal. Please try again.');
+                throw error;
+            }
+        }
+
+        async function deleteDeal(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/deals/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) throw new Error('Failed to delete deal');
+                return true;
+            } catch (error) {
+                console.error('Error deleting deal:', error);
+                alert('Failed to delete deal. Please try again.');
+                throw error;
+            }
+        }
+
+        // Check if user is already logged in
+        function checkLoginStatus() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (isLoggedIn === 'true') {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDeals();
+            }
+        }
 
         // Login functionality
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -180,6 +216,7 @@
 
             // Simple authentication - in a real app, this would be server-side
             if (username === 'admin' && password === 'password') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadDeals();
@@ -190,33 +227,39 @@
 
         // Logout functionality
         function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loginForm').reset();
         }
 
         // Load deals into table
-        function loadDeals() {
-            const tableBody = document.getElementById('dealsTableBody');
-            tableBody.innerHTML = '';
+        async function loadDeals() {
+            try {
+                await fetchDeals();
+                const tableBody = document.getElementById('dealsTableBody');
+                tableBody.innerHTML = '';
 
-            deals.forEach(deal => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${deal.title}</td>
-                    <td>${deal.value}</td>
-                    <td>${deal.industry}</td>
-                    <td>${deal.date}</td>
-                    <td>${deal.duration}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="edit-btn" onclick="editDeal(${deal.id})">Edit</button>
-                            <button class="delete-btn" onclick="deleteDeal(${deal.id})">Delete</button>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
+                deals.forEach(deal => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${deal.title}</td>
+                        <td>${deal.value}</td>
+                        <td>${deal.industry}</td>
+                        <td>${deal.date}</td>
+                        <td>${deal.duration}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="edit-btn" onclick="editDeal(${deal.id})">Edit</button>
+                                <button class="delete-btn" onclick="deleteDealFromTable(${deal.id})">Delete</button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading deals:', error);
+            }
         }
 
         // Open add deal modal
@@ -239,15 +282,20 @@
                 document.getElementById('dealDate').value = deal.date;
                 document.getElementById('dealDuration').value = deal.duration;
                 document.getElementById('dealDescription').value = deal.description;
+                document.getElementById('dealImage').value = '';
                 document.getElementById('dealModal').style.display = 'block';
             }
         }
 
-        // Delete deal
-        function deleteDeal(id) {
+        // Delete deal from table (wrapper for API call)
+        async function deleteDealFromTable(id) {
             if (confirm('Are you sure you want to delete this deal?')) {
-                deals = deals.filter(d => d.id !== id);
-                loadDeals();
+                try {
+                    await deleteDeal(id);
+                    await loadDeals(); // Reload the table
+                } catch (error) {
+                    console.error('Error deleting deal:', error);
+                }
             }
         }
 
@@ -257,35 +305,69 @@
             currentEditId = null;
         }
 
+        // Add image upload function
+        async function uploadImage(file) {
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch(`${API_BASE_URL}/upload-image`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to upload image');
+                }
+                
+                const result = await response.json();
+                return result.imagePath;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('Failed to upload image. Please try again.');
+                throw error;
+            }
+        }
+
         // Handle deal form submission
-        document.getElementById('dealForm').addEventListener('submit', function(e) {
+        document.getElementById('dealForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
-            const dealData = {
-                title: formData.get('dealTitle'),
-                value: formData.get('dealValue'),
-                industry: formData.get('dealIndustry'),
-                date: formData.get('dealDate'),
-                duration: formData.get('dealDuration'),
-                description: formData.get('dealDescription')
-            };
-
-            if (currentEditId) {
-                // Edit existing deal
-                const index = deals.findIndex(d => d.id === currentEditId);
-                if (index !== -1) {
-                    deals[index] = { ...deals[index], ...dealData };
+            const imageInput = document.getElementById('dealImage');
+            let imagePath = '';
+            
+            try {
+                // Upload image if one is selected
+                if (imageInput && imageInput.files && imageInput.files[0]) {
+                    imagePath = await uploadImage(imageInput.files[0]);
                 }
-            } else {
-                // Add new deal
-                const newId = Math.max(...deals.map(d => d.id), 0) + 1;
-                deals.push({ id: newId, ...dealData });
-            }
+                
+                const dealData = {
+                    title: formData.get('dealTitle'),
+                    value: formData.get('dealValue'),
+                    industry: formData.get('dealIndustry'),
+                    date: formData.get('dealDate'),
+                    duration: formData.get('dealDuration'),
+                    description: formData.get('dealDescription'),
+                    image: imagePath
+                };
 
-            loadDeals();
-            closeModal();
-            e.target.reset();
+                if (currentEditId) {
+                    // For now, we'll just add a new deal since the backend doesn't support editing yet
+                    // In a real app, you'd add a PUT endpoint for editing
+                    alert('Editing is not yet implemented. Please delete and re-add the deal.');
+                } else {
+                    // Add new deal
+                    await addDeal(dealData);
+                    await loadDeals(); // Reload the table
+                }
+
+                closeModal();
+                e.target.reset();
+            } catch (error) {
+                console.error('Error saving deal:', error);
+            }
         });
 
         // Close modal when clicking outside
@@ -307,8 +389,9 @@
             link.click();
         }
 
-        // Add export button to dashboard
+        // Add export button to dashboard and check login status on page load
         document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
             const sectionHeader = document.getElementById('sectionHeader');
             const exportBtn = document.createElement('button');
             exportBtn.textContent = 'Export Deals';

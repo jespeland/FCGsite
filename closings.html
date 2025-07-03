@@ -80,84 +80,8 @@
 
         <div class="deals-section">
             <h2>Recent Closed Deals</h2>
-            <div class="deals-grid">
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Manhattan Office Tower Refinancing</div>
-                        <div class="deal-value">$150M</div>
-                    </div>
-                    <div class="deal-industry">Commercial Office</div>
-                    <div class="deal-description">Successfully structured and closed a $150M refinancing for a Class A office tower in Midtown Manhattan, securing favorable terms and extending the loan maturity.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q4 2023</span>
-                        <span class="deal-duration">6 months</span>
-                    </div>
-                </div>
-
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Multifamily Acquisition Financing</div>
-                        <div class="deal-value">$75M</div>
-                    </div>
-                    <div class="deal-industry">Multifamily</div>
-                    <div class="deal-description">Arranged acquisition financing for a 300-unit luxury apartment complex in Brooklyn, providing optimal leverage and competitive pricing for our client.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q3 2023</span>
-                        <span class="deal-duration">8 months</span>
-                    </div>
-                </div>
-
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Hotel Construction Loan</div>
-                        <div class="deal-value">$200M</div>
-                    </div>
-                    <div class="deal-industry">Hospitality</div>
-                    <div class="deal-description">Secured construction financing for a 200-room boutique hotel in Miami Beach, navigating complex zoning requirements and market conditions.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q2 2023</span>
-                        <span class="deal-duration">10 months</span>
-                    </div>
-                </div>
-
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Retail Center Bridge Loan</div>
-                        <div class="deal-value">$45M</div>
-                    </div>
-                    <div class="deal-industry">Retail</div>
-                    <div class="deal-description">Provided bridge financing for a shopping center redevelopment project, enabling the client to execute their value-add strategy and secure permanent financing.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q1 2023</span>
-                        <span class="deal-duration">4 months</span>
-                    </div>
-                </div>
-
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Industrial Portfolio Refinancing</div>
-                        <div class="deal-value">$300M</div>
-                    </div>
-                    <div class="deal-industry">Industrial</div>
-                    <div class="deal-description">Completed a complex portfolio refinancing across 15 industrial properties, optimizing debt structure and achieving significant interest savings.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q4 2022</span>
-                        <span class="deal-duration">12 months</span>
-                    </div>
-                </div>
-
-                <div class="deal-card">
-                    <div class="deal-header">
-                        <div class="deal-title">Mixed-Use Development Financing</div>
-                        <div class="deal-value">$180M</div>
-                    </div>
-                    <div class="deal-industry">Mixed-Use</div>
-                    <div class="deal-description">Structured financing for a mixed-use development including residential, retail, and office components, coordinating multiple capital sources.</div>
-                    <div class="deal-details">
-                        <span class="deal-date">Q3 2022</span>
-                        <span class="deal-duration">15 months</span>
-                    </div>
-                </div>
+            <div class="deals-grid" id="dealsGrid">
+                <!-- Deals will be loaded dynamically from the API -->
             </div>
         </div>
 
@@ -211,5 +135,66 @@
             <p>&copy; 2025 Fortune Capital Group. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // API base URL - works for both local development and Vercel deployment
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3001/api' 
+            : `${window.location.origin}/api`;
+
+        // Load deals from the API
+        async function loadDeals() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/deals`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch deals');
+                }
+                const deals = await response.json();
+                displayDeals(deals);
+            } catch (error) {
+                console.error('Error loading deals:', error);
+                // Show a fallback message if API is not available
+                document.getElementById('dealsGrid').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <p>Unable to load deals at this time. Please try again later.</p>
+                        <p>Make sure the backend server is running on localhost:3001</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display deals in the grid
+        function displayDeals(deals) {
+            const dealsGrid = document.getElementById('dealsGrid');
+            
+            if (deals.length === 0) {
+                dealsGrid.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <p>No deals available at this time.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            dealsGrid.innerHTML = deals.map(deal => `
+                <div class="closing-card">
+                    <img src="${deal.image || 'headshotPlaceholder.jpg'}" alt="${deal.title}" class="closing-image">
+                    <div class="closing-header">
+                        <h3>${deal.title}</h3>
+                        <span class="closing-value">${deal.value}</span>
+                    </div>
+                    <p>${deal.description}</p>
+                    <div class="closing-details">
+                        <span class="closing-date">${deal.date}</span>
+                        <span class="closing-type">${deal.industry}</span>
+                        ${deal.duration ? `<span class="closing-duration">${deal.duration}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load deals when the page loads
+        document.addEventListener('DOMContentLoaded', loadDeals);
+    </script>
 </body>
-</html> 
+</html>
