@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Cardo', serif;
     line-height: 1.6;
     color: #333;
 }
@@ -196,6 +196,7 @@ body {
     color: #000;
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
+    text-align: center;
 }
 
 .form-group {
