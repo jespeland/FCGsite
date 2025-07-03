@@ -16,3 +16,6 @@ logs
 # OS files
 .DS_Store
 Thumbs.db
+
+#other files
+mongopass.txt

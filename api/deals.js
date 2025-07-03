@@ -1,6 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+const { MongoClient } = require('mongodb');
 const multer = require('multer');
+const path = require('path');
+
+// MongoDB connection string - you'll need to replace this with your actual connection string
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority';
+const DATABASE_NAME = 'fcg-website';
+const COLLECTION_NAME = 'deals';
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -28,40 +33,78 @@ const upload = multer({
     }
 });
 
-// Helper to read deals from JSON file
-function readDeals() {
+// MongoDB connection function
+async function connectToDatabase() {
     try {
-        // Try multiple possible paths for the deals.json file
-        const possiblePaths = [
-            path.join(process.cwd(), 'deals.json'),
-            path.join(__dirname, '..', 'deals.json'),
-            './deals.json'
-        ];
-        
-        for (const dataPath of possiblePaths) {
-            if (fs.existsSync(dataPath)) {
-                const data = fs.readFileSync(dataPath, 'utf-8');
-                return JSON.parse(data || '[]');
-            }
-        }
-        
-        // If file doesn't exist, return empty array
-        return [];
+        const client = new MongoClient(MONGODB_URI);
+        await client.connect();
+        return client.db(DATABASE_NAME);
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error;
+    }
+}
+
+// Helper to read deals from MongoDB
+async function readDeals() {
+    try {
+        const db = await connectToDatabase();
+        const collection = db.collection(COLLECTION_NAME);
+        const deals = await collection.find({}).toArray();
+        return deals;
     } catch (error) {
         console.error('Error reading deals:', error);
         return [];
     }
 }
 
-// Helper to write deals to JSON file
-function writeDeals(deals) {
+// Helper to write deals to MongoDB
+async function writeDeals(deals) {
     try {
-        // Use the same path as readDeals
-        const dataPath = path.join(process.cwd(), 'deals.json');
-        fs.writeFileSync(dataPath, JSON.stringify(deals, null, 2));
+        const db = await connectToDatabase();
+        const collection = db.collection(COLLECTION_NAME);
+        
+        // Clear existing deals and insert new ones
+        await collection.deleteMany({});
+        if (deals.length > 0) {
+            await collection.insertMany(deals);
+        }
         return true;
     } catch (error) {
         console.error('Error writing deals:', error);
+        return false;
+    }
+}
+
+// Helper to add a single deal to MongoDB
+async function addDeal(deal) {
+    try {
+        const db = await connectToDatabase();
+        const collection = db.collection(COLLECTION_NAME);
+        
+        // Get the next ID
+        const maxIdResult = await collection.find().sort({ id: -1 }).limit(1).toArray();
+        const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
+        
+        deal.id = nextId;
+        const result = await collection.insertOne(deal);
+        return deal;
+    } catch (error) {
+        console.error('Error adding deal:', error);
+        throw error;
+    }
+}
+
+// Helper to delete a deal from MongoDB
+async function deleteDeal(id) {
+    try {
+        const db = await connectToDatabase();
+        const collection = db.collection(COLLECTION_NAME);
+        
+        const result = await collection.deleteOne({ id: parseInt(id) });
+        return result.deletedCount > 0;
+    } catch (error) {
+        console.error('Error deleting deal:', error);
         return false;
     }
 }
@@ -85,7 +128,7 @@ module.exports = async (req, res) => {
         
         // Handle different API endpoints
         if (req.method === 'GET' && (requestPath === '/api/deals' || requestPath === '/deals')) {
-            const deals = readDeals();
+            const deals = await readDeals();
             console.log('Returning deals:', deals.length);
             res.json(deals);
             return;
@@ -94,35 +137,31 @@ module.exports = async (req, res) => {
         if (req.method === 'POST' && (requestPath === '/api/deals' || requestPath === '/deals')) {
             console.log('Adding new deal:', req.body);
             
-            // For now, let's just return success without writing to file
-            // since Vercel functions have read-only file systems
-            const deals = readDeals();
-            const newDeal = req.body;
-            newDeal.id = deals.length ? Math.max(...deals.map(d => d.id)) + 1 : 1;
-            
-            // Instead of writing to file, we'll return the deal as if it was saved
-            // In a real production app, you'd use a database
-            console.log('Deal would be saved:', newDeal);
-            res.status(201).json({
-                ...newDeal,
-                note: 'Deal added (file system is read-only in Vercel functions)'
-            });
+            try {
+                const newDeal = await addDeal(req.body);
+                console.log('Deal saved successfully:', newDeal);
+                res.status(201).json(newDeal);
+            } catch (error) {
+                console.error('Failed to save deal:', error);
+                res.status(500).json({ error: 'Failed to save deal', details: error.message });
+            }
             return;
         }
 
         if (req.method === 'DELETE' && (requestPath.startsWith('/api/deals/') || requestPath.startsWith('/deals/'))) {
             const id = parseInt(requestPath.split('/').pop(), 10);
-            let deals = readDeals();
-            const initialLength = deals.length;
-            deals = deals.filter(d => d.id !== id);
             
-            if (deals.length === initialLength) {
-                res.status(404).json({ error: 'Deal not found' });
-                return;
+            try {
+                const deleted = await deleteDeal(id);
+                if (deleted) {
+                    res.status(204).end();
+                } else {
+                    res.status(404).json({ error: 'Deal not found' });
+                }
+            } catch (error) {
+                console.error('Failed to delete deal:', error);
+                res.status(500).json({ error: 'Failed to delete deal' });
             }
-            
-            // For now, just return success without writing
-            res.status(204).end();
             return;
         }
 
