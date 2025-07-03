@@ -1,11 +1,19 @@
 const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
 // MongoDB connection string - you'll need to replace this with your actual connection string
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority';
 const DATABASE_NAME = 'fcg-website';
 const COLLECTION_NAME = 'deals';
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Configure multer for file uploads (memory storage since we can't write to disk in Vercel)
 const upload = multer({ 
@@ -98,6 +106,18 @@ async function deleteDeal(id) {
     }
 }
 
+// Helper to upload image to Cloudinary
+async function uploadToCloudinary(file) {
+    const b64 = Buffer.from(file.buffer).toString('base64');
+    const dataURI = `data:${file.mimetype};base64,${b64}`;
+    const result = await cloudinary.uploader.upload(dataURI, {
+        folder: 'fcg-closings',
+        public_id: file.originalname.split('.')[0] + '_' + Date.now(),
+        overwrite: false,
+    });
+    return result.secure_url;
+}
+
 module.exports = async (req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -156,28 +176,31 @@ module.exports = async (req, res) => {
 
         // Handle image upload
         if (req.method === 'POST' && (requestPath === '/api/upload-image' || requestPath === '/upload-image')) {
-            upload.single('image')(req, res, (err) => {
+            upload.single('image')(req, res, async (err) => {
                 if (err) {
                     res.status(400).json({ error: err.message });
                     return;
                 }
-                
                 if (!req.file) {
                     res.status(400).json({ error: 'No image file uploaded' });
                     return;
                 }
-                
-                // For now, we'll use a placeholder image since Vercel can't serve uploaded files
-                // In production, you should use a cloud storage service like Cloudinary
-                const imagePath = 'headshotPlaceholder.jpg';
-                
-                res.json({ 
-                    success: true, 
-                    imagePath: imagePath,
-                    filename: req.file.originalname,
-                    originalName: req.file.originalname,
-                    note: 'Image uploaded but using placeholder. For production, implement cloud storage like Cloudinary.'
-                });
+                try {
+                    // Upload to Cloudinary
+                    const imageUrl = await uploadToCloudinary(req.file);
+                    res.json({ 
+                        success: true, 
+                        imagePath: imageUrl,
+                        filename: req.file.originalname,
+                        originalName: req.file.originalname,
+                        note: 'Image uploaded to Cloudinary'
+                    });
+                } catch (uploadError) {
+                    res.status(500).json({ 
+                        error: 'Failed to upload image',
+                        details: uploadError.message 
+                    });
+                }
             });
             return;
         }
