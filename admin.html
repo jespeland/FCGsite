@@ -268,7 +268,6 @@
                         <td>${deal.duration}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="edit-btn" onclick="editDeal(${deal.id})">Edit</button>
                                 <button class="delete-btn" onclick="deleteDealFromTable(${deal.id})">Delete</button>
                             </div>
                         </td>
@@ -282,28 +281,12 @@
 
         // Open add deal modal
         function openAddDealModal() {
-            currentEditId = null;
             document.getElementById('modalTitle').textContent = 'Add New Deal';
             document.getElementById('dealForm').reset();
             document.getElementById('dealModal').style.display = 'block';
         }
 
-        // Edit deal
-        function editDeal(id) {
-            const deal = deals.find(d => d.id === id);
-            if (deal) {
-                currentEditId = id;
-                document.getElementById('modalTitle').textContent = 'Edit Deal';
-                document.getElementById('dealTitle').value = deal.title;
-                document.getElementById('dealValue').value = deal.value;
-                document.getElementById('dealIndustry').value = deal.industry;
-                document.getElementById('dealDate').value = deal.date;
-                document.getElementById('dealDuration').value = deal.duration;
-                document.getElementById('dealDescription').value = deal.description;
-                document.getElementById('dealImage').value = '';
-                document.getElementById('dealModal').style.display = 'block';
-            }
-        }
+
 
         // Delete deal from table (wrapper for API call)
         async function deleteDealFromTable(id) {
@@ -320,7 +303,6 @@
         // Close modal
         function closeModal() {
             document.getElementById('dealModal').style.display = 'none';
-            currentEditId = null;
         }
 
         // Add image upload function
@@ -369,15 +351,9 @@
                     image: imagePath
                 };
 
-                if (currentEditId) {
-                    // For now, we'll just add a new deal since the backend doesn't support editing yet
-                    // In a real app, you'd add a PUT endpoint for editing
-                    alert('Editing is not yet implemented. Please delete and re-add the deal.');
-                } else {
-                    // Add new deal
-                    await addDeal(dealData);
-                    await loadDeals(); // Reload the table
-                }
+                // Add new deal
+                await addDeal(dealData);
+                await loadDeals(); // Reload the table
 
                 closeModal();
                 e.target.reset();
