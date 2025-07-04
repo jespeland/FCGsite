@@ -7,26 +7,6 @@
     <link rel="stylesheet" href="admin.css">
 </head> 
 <body>
-    <!-- Navigation Bar (only visible when login form is open) -->
-    <nav class="navbar" id="adminNavBar">
-        <div class="logo-container">
-            <a href="index.html">
-                <img src="CFGlogoSmall.png" alt="FCG Logo" class="logo">
-            </a>
-        </div>
-        <button class="nav-toggle" aria-label="Open navigation">
-            <span class="hamburger"></span>
-            <span class="hamburger"></span>
-            <span class="hamburger"></span>
-        </button>
-        <ul class="nav-links">
-            <li><a href="about.html">About</a></li>
-            <li><a href="team.html">Team</a></li>
-            <li><a href="closings.html">Closings</a></li>
-            <li><a href="contact.html" class="contact">CONTACT US</a></li>
-        </ul>
-    </nav>
-
     <!-- Login Form -->
     <div id="loginContainer">
         <form id="loginForm">
@@ -224,15 +204,7 @@
             }
         }
 
-        // Show/hide nav bar based on login state
-        function updateNavBarVisibility() {
-            const token = sessionStorage.getItem('adminToken');
-            document.getElementById('adminNavBar').style.display = token ? 'none' : 'flex';
-        }
-        // Call on page load and after login/logout
-        updateNavBarVisibility();
-
-        // Update checkLoginStatus and logout to call updateNavBarVisibility
+        // Check if user is already logged in
         function checkLoginStatus() {
             const token = sessionStorage.getItem('adminToken');
             if (token) {
@@ -240,19 +212,43 @@
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadDeals();
-            } else {
-                document.getElementById('loginContainer').style.display = 'flex';
-                document.getElementById('dashboard').style.display = 'none';
             }
-            updateNavBarVisibility();
         }
+
+        // Login functionality (now uses backend API)
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+                if (response.ok && result.token) {
+                    sessionStorage.setItem('adminToken', result.token);
+                    adminToken = result.token;
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadDeals();
+                } else {
+                    alert(result.error || 'Invalid credentials');
+                }
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            }
+        });
+
+        // Logout functionality
         function logout() {
             sessionStorage.removeItem('adminToken');
             adminToken = null;
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loginForm').reset();
-            updateNavBarVisibility();
         }
 
         // Load deals into table
