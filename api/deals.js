@@ -150,9 +150,8 @@ module.exports = async (req, res) => {
         
         // Public: GET deals
         if (req.method === 'GET' && (requestPath === '/api/deals' || requestPath === '/deals')) {
-            const db = await connectToDatabase();
-            const collection = db.collection(COLLECTION_NAME);
-            const deals = await collection.find({}).sort({ order: 1 }).toArray();
+            const deals = await readDeals();
+            console.log('Returning deals:', deals.length);
             res.json(deals);
             return;
         }
@@ -233,46 +232,6 @@ module.exports = async (req, res) => {
                     });
                 }
             });
-            return;
-        }
-
-        // PATCH /api/deals/order - Update the order of deals
-        if (req.method === 'PATCH' && (requestPath === '/api/deals/order' || requestPath === '/deals/order')) {
-            const user = verifyJWT(req);
-            if (!user) {
-                res.status(401).json({ error: 'Unauthorized: Invalid or missing token' });
-                return;
-            }
-            try {
-                let body = req.body;
-                // Parse body if it's a string (Vercel may not parse JSON automatically for PATCH)
-                if (typeof body === 'string') {
-                    body = JSON.parse(body);
-                }
-                const { orderedIds } = body;
-                if (!Array.isArray(orderedIds)) {
-                    res.status(400).json({ error: 'orderedIds must be an array' });
-                    return;
-                }
-                const db = await connectToDatabase();
-                const collection = db.collection(COLLECTION_NAME);
-                // Update each deal's order field
-                for (let i = 0; i < orderedIds.length; i++) {
-                    const id = orderedIds[i];
-                    // Try both _id (ObjectId) and id (number) for compatibility
-                    let filter = {};
-                    if (typeof id === 'string' && id.length === 24) {
-                        filter = { _id: require('mongodb').ObjectId(id) };
-                    } else if (!isNaN(Number(id))) {
-                        filter = { id: parseInt(id) };
-                    }
-                    await collection.updateOne(filter, { $set: { order: i } });
-                }
-                res.json({ success: true });
-            } catch (err) {
-                console.error('Error updating deal order:', err);
-                res.status(500).json({ error: 'Internal server error' });
-            }
             return;
         }
 
