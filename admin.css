@@ -1,4 +1,9 @@
-/* Admin Page Styles */
+/*
+    admin.css
+    Fortune Capital Group - Admin Dashboard Styles
+    Styles for the admin dashboard, including login, dashboard, table, modal, and responsive design.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;

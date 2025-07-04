@@ -1,4 +1,9 @@
-/* Closings Page Styles */
+/*
+    closings.css
+    Fortune Capital Group - Closings Page Styles
+    Styles for the closings page, including grid layout, cards, and responsive design.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;

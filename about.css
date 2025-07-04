@@ -1,4 +1,9 @@
-/* About Page Styles */
+/*
+    about.css
+    Fortune Capital Group - About Page Styles
+    Styles for the About page, including layout, typography, and responsive design.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;

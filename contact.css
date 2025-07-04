@@ -1,4 +1,9 @@
-/* Contact Page Styles */
+/*
+    contact.css
+    Fortune Capital Group - Contact Page Styles
+    Styles for the contact page, including form, layout, and responsive design.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;

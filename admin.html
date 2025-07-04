@@ -1,3 +1,9 @@
+<!--
+    admin.html
+    Fortune Capital Group - Admin Dashboard
+    This page allows authenticated users to manage closed deals (add, delete, export) via a secure admin interface.
+    All major sections and scripts are documented for maintainability.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,6 +149,10 @@
     </footer>
 
     <script>
+        // =============================
+        // FCG Admin Dashboard JS Logic
+        // =============================
+
         // API base URL - works for both local development and Vercel deployment
         const API_BASE_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:3001/api' 
@@ -154,7 +164,10 @@
         // Store JWT token after login
         let adminToken = null;
 
-        // API functions
+        /**
+         * Fetch all deals from the backend API and update the global deals array.
+         * @returns {Promise<Array>} Array of deal objects
+         */
         async function fetchDeals() {
             try {
                 const response = await fetch(`${API_BASE_URL}/deals`);
@@ -168,6 +181,11 @@
             }
         }
 
+        /**
+         * Add a new deal to the backend via API.
+         * @param {Object} dealData - The deal data to add
+         * @returns {Promise<Object>} The created deal object
+         */
         async function addDeal(dealData) {
             try {
                 const response = await fetch(`${API_BASE_URL}/deals`, {
@@ -187,6 +205,11 @@
             }
         }
 
+        /**
+         * Delete a deal from the backend via API.
+         * @param {number|string} id - The deal ID to delete
+         * @returns {Promise<boolean>} True if deleted
+         */
         async function deleteDeal(id) {
             try {
                 const response = await fetch(`${API_BASE_URL}/deals/${id}`, {
@@ -204,7 +227,10 @@
             }
         }
 
-        // Check if user is already logged in
+        /**
+         * Check if the user is already logged in (JWT in sessionStorage).
+         * If so, show dashboard and load deals.
+         */
         function checkLoginStatus() {
             const token = sessionStorage.getItem('adminToken');
             if (token) {
@@ -215,7 +241,9 @@
             }
         }
 
-        // Login functionality (now uses backend API)
+        /**
+         * Handle login form submission, authenticate via backend, and store JWT.
+         */
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
@@ -242,7 +270,9 @@
             }
         });
 
-        // Logout functionality
+        /**
+         * Log out the current admin user and reset the dashboard.
+         */
         function logout() {
             sessionStorage.removeItem('adminToken');
             adminToken = null;
@@ -251,7 +281,9 @@
             document.getElementById('loginForm').reset();
         }
 
-        // Load deals into table
+        /**
+         * Load all deals from the backend and render them in the table.
+         */
         async function loadDeals() {
             try {
                 await fetchDeals();
@@ -279,16 +311,19 @@
             }
         }
 
-        // Open add deal modal
+        /**
+         * Open the modal to add a new deal.
+         */
         function openAddDealModal() {
             document.getElementById('modalTitle').textContent = 'Add New Deal';
             document.getElementById('dealForm').reset();
             document.getElementById('dealModal').style.display = 'block';
         }
 
-
-
-        // Delete deal from table (wrapper for API call)
+        /**
+         * Delete a deal from the table and backend after confirmation.
+         * @param {number|string} id - The deal ID to delete
+         */
         async function deleteDealFromTable(id) {
             if (confirm('Are you sure you want to delete this deal?')) {
                 try {
@@ -300,12 +335,18 @@
             }
         }
 
-        // Close modal
+        /**
+         * Close the deal modal dialog.
+         */
         function closeModal() {
             document.getElementById('dealModal').style.display = 'none';
         }
 
-        // Add image upload function
+        /**
+         * Upload an image file to the backend and return the image path.
+         * @param {File} file - The image file to upload
+         * @returns {Promise<string>} The uploaded image path
+         */
         async function uploadImage(file) {
             try {
                 const formData = new FormData();
@@ -327,7 +368,9 @@
             }
         }
 
-        // Handle deal form submission
+        /**
+         * Handle the deal form submission for adding a new deal (with optional image upload).
+         */
         document.getElementById('dealForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -362,7 +405,9 @@
             }
         });
 
-        // Close modal when clicking outside
+        /**
+         * Close the modal if the user clicks outside of it.
+         */
         window.onclick = function(event) {
             const modal = document.getElementById('dealModal');
             if (event.target === modal) {
@@ -370,7 +415,9 @@
             }
         }
 
-        // Export deals to JSON (for integration with main site)
+        /**
+         * Export all deals to a JSON file for download.
+         */
         function exportDeals() {
             const dataStr = JSON.stringify(deals, null, 2);
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -381,7 +428,9 @@
             link.click();
         }
 
-        // Add export button to dashboard and check login status on page load
+        /**
+         * On page load, check login status and add the export button to the dashboard.
+         */
         document.addEventListener('DOMContentLoaded', function() {
             checkLoginStatus();
             const sectionHeader = document.getElementById('sectionHeader');

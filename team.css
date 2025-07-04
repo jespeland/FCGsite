@@ -1,4 +1,9 @@
-/* Team Page Styles */
+/*
+    team.css
+    Fortune Capital Group - Team Page Styles
+    Styles for the team page, including layout, team member cards, and responsive design.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;

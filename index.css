@@ -1,4 +1,9 @@
-/* Landing Page Styles */
+/*
+    index.css
+    Fortune Capital Group - Home Page Styles
+    Styles for the home page, including navigation, hero, team, closings preview, and footer.
+    All major style blocks are documented for maintainability.
+*/
 * {
     margin: 0;
     padding: 0;
