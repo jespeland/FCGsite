@@ -151,6 +151,8 @@
         // Deals data will be loaded from the backend
         let deals = [];
         let currentEditId = null;
+        // Store JWT token after login
+        let adminToken = null;
 
         // API functions
         async function fetchDeals() {
@@ -172,6 +174,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
                     },
                     body: JSON.stringify(dealData)
                 });
@@ -187,7 +190,10 @@
         async function deleteDeal(id) {
             try {
                 const response = await fetch(`${API_BASE_URL}/deals/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
                 });
                 if (!response.ok) throw new Error('Failed to delete deal');
                 return true;
@@ -200,34 +206,46 @@
 
         // Check if user is already logged in
         function checkLoginStatus() {
-            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
-            if (isLoggedIn === 'true') {
+            const token = sessionStorage.getItem('adminToken');
+            if (token) {
+                adminToken = token;
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadDeals();
             }
         }
 
-        // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Login functionality (now uses backend API)
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Simple authentication - in a real app, this would be server-side
-            if (username === 'admin' && password === 'password') {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                loadDeals();
-            } else {
-                alert('Invalid credentials. Use admin/password');
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+                if (response.ok && result.token) {
+                    sessionStorage.setItem('adminToken', result.token);
+                    adminToken = result.token;
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadDeals();
+                } else {
+                    alert(result.error || 'Invalid credentials');
+                }
+            } catch (error) {
+                alert('Login failed. Please try again.');
             }
         });
 
         // Logout functionality
         function logout() {
-            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminToken');
+            adminToken = null;
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loginForm').reset();
@@ -310,16 +328,14 @@
             try {
                 const formData = new FormData();
                 formData.append('image', file);
-                
                 const response = await fetch(`${API_BASE_URL}/upload-image`, {
                     method: 'POST',
+                    headers: adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {},
                     body: formData
                 });
-                
                 if (!response.ok) {
                     throw new Error('Failed to upload image');
                 }
-                
                 const result = await response.json();
                 return result.imagePath;
             } catch (error) {
