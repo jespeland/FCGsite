@@ -290,7 +290,7 @@
                 const tableBody = document.getElementById('dealsTableBody');
                 tableBody.innerHTML = '';
 
-                deals.forEach(deal => {
+                deals.forEach((deal, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${deal.title}</td>
@@ -300,7 +300,9 @@
                         <td>${deal.duration}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="delete-btn" onclick="deleteDealFromTable(${deal.id})">Delete</button>
+                                <button onclick="moveDealUp(${index})" ${index === 0 ? 'disabled' : ''}>↑</button>
+                                <button onclick="moveDealDown(${index})" ${index === deals.length - 1 ? 'disabled' : ''}>↓</button>
+                                <button class="delete-btn" onclick="deleteDealFromTable('${deal._id || deal.id}')">Delete</button>
                             </div>
                         </td>
                     `;
@@ -440,6 +442,32 @@
             exportBtn.onclick = exportDeals;
             sectionHeader.appendChild(exportBtn);
         });
+
+        // Add move up/down and saveOrder functions
+        function moveDealUp(index) {
+            if (index === 0) return;
+            [deals[index - 1], deals[index]] = [deals[index], deals[index - 1]];
+            saveOrder();
+        }
+
+        function moveDealDown(index) {
+            if (index === deals.length - 1) return;
+            [deals[index], deals[index + 1]] = [deals[index + 1], deals[index]];
+            saveOrder();
+        }
+
+        async function saveOrder() {
+            const orderedIds = deals.map(deal => deal._id || deal.id);
+            await fetch(`${API_BASE_URL}/deals/order`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                },
+                body: JSON.stringify({ orderedIds })
+            });
+            await loadDeals();
+        }
     </script>
 </body>
 </html> 
