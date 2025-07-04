@@ -394,6 +394,20 @@
             }
         }
 
+        // Escape key closes login form (redirects to index if not logged in)
+        document.addEventListener('keydown', function(event) {
+            const loginContainer = document.getElementById('loginContainer');
+            const dashboard = document.getElementById('dashboard');
+            if (
+                event.key === 'Escape' &&
+                loginContainer &&
+                loginContainer.style.display !== 'none' &&
+                (!dashboard || dashboard.style.display === 'none')
+            ) {
+                window.location.href = 'index.html';
+            }
+        });
+
         // Export deals to JSON (for integration with main site)
         function exportDeals() {
             const dataStr = JSON.stringify(deals, null, 2);
