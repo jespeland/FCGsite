@@ -2,6 +2,7 @@ const { MongoClient } = require('mongodb');
 const multer = require('multer');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken');
 
 // MongoDB connection string - you'll need to replace this with your actual connection string
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://fcg-admin:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority';
@@ -118,11 +119,23 @@ async function uploadToCloudinary(file) {
     return result.secure_url;
 }
 
+// Helper to verify JWT
+function verifyJWT(req) {
+    const auth = req.headers['authorization'] || req.headers['Authorization'];
+    if (!auth || !auth.startsWith('Bearer ')) return null;
+    const token = auth.split(' ')[1];
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET || 'supersecretjwtkey');
+    } catch {
+        return null;
+    }
+}
+
 module.exports = async (req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
@@ -135,12 +148,24 @@ module.exports = async (req, res) => {
         const requestPath = req.url || req.path || '';
         console.log('Request:', req.method, requestPath);
         
-        // Handle different API endpoints
+        // Public: GET deals
         if (req.method === 'GET' && (requestPath === '/api/deals' || requestPath === '/deals')) {
             const deals = await readDeals();
             console.log('Returning deals:', deals.length);
             res.json(deals);
             return;
+        }
+
+        // Protected: POST/DELETE/upload require valid JWT
+        if (
+            (req.method === 'POST' && (requestPath === '/api/deals' || requestPath === '/deals')) ||
+            (req.method === 'DELETE' && (requestPath.startsWith('/api/deals/') || requestPath.startsWith('/deals/')))
+        ) {
+            const user = verifyJWT(req);
+            if (!user) {
+                res.status(401).json({ error: 'Unauthorized: Invalid or missing token' });
+                return;
+            }
         }
 
         if (req.method === 'POST' && (requestPath === '/api/deals' || requestPath === '/deals')) {
@@ -174,8 +199,13 @@ module.exports = async (req, res) => {
             return;
         }
 
-        // Handle image upload
+        // Image upload: also protected
         if (req.method === 'POST' && (requestPath === '/api/upload-image' || requestPath === '/upload-image')) {
+            const user = verifyJWT(req);
+            if (!user) {
+                res.status(401).json({ error: 'Unauthorized: Invalid or missing token' });
+                return;
+            }
             upload.single('image')(req, res, async (err) => {
                 if (err) {
                     res.status(400).json({ error: err.message });
