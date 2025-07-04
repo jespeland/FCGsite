@@ -176,6 +176,9 @@
                 return;
             }
 
+            // Reverse the deals array to show most recent first
+            deals = deals.slice().reverse();
+
             dealsGrid.innerHTML = deals.map(deal => `
                 <div class="closing-card">
                     <img src="${deal.image || 'headshotPlaceholder.jpg'}" alt="${deal.title}" class="closing-image" onerror="this.src='headshotPlaceholder.jpg'">
