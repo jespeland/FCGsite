@@ -398,11 +398,13 @@
         document.addEventListener('keydown', function(event) {
             const loginContainer = document.getElementById('loginContainer');
             const dashboard = document.getElementById('dashboard');
+            // Use getComputedStyle to check visibility
+            const loginVisible = loginContainer && window.getComputedStyle(loginContainer).display !== 'none';
+            const dashboardVisible = dashboard && window.getComputedStyle(dashboard).display !== 'none';
             if (
                 event.key === 'Escape' &&
-                loginContainer &&
-                loginContainer.style.display !== 'none' &&
-                (!dashboard || dashboard.style.display === 'none')
+                loginVisible &&
+                (!dashboardVisible)
             ) {
                 window.location.href = 'index.html';
             }
