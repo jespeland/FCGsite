@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Fortune Capital Group</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="CFGlogoSmall.png" alt="FCG Logo" class="logo">
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="team.html">Team</a></li>
+            <li><a href="closings.html">Closings</a></li>
+            <li><a href="contact.html" class="contact">CONTACT US</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+    </nav>
+    <main class="content" style="max-width: 800px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h1>Privacy Policy</h1>
+        <p>Last updated: <span id="lastUpdated"></span></p>
+        <p>Fortune Capital Group ("FCG", "we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.</p>
+        <h2>Information We Collect</h2>
+        <ul>
+            <li><strong>Contact Form Data:</strong> When you submit a contact form, we collect your name, email address, and any other information you provide.</li>
+            <li><strong>Admin Data:</strong> If you use the admin dashboard, we collect your login credentials and any information you submit about closed deals, including uploaded images.</li>
+            <li><strong>Usage Data:</strong> We may collect information about how you use our website (e.g., IP address, browser type, pages visited) for analytics and security.</li>
+        </ul>
+        <h2>How We Use Your Information</h2>
+        <ul>
+            <li>To respond to your inquiries and provide customer support</li>
+            <li>To manage and display closed deals on the website</li>
+            <li>To maintain the security and integrity of our website and admin system</li>
+            <li>To comply with legal obligations</li>
+        </ul>
+        <h2>How We Protect Your Information</h2>
+        <ul>
+            <li>All sensitive data (including admin credentials) is encrypted and stored securely.</li>
+            <li>Deal and contact data is stored in <strong>MongoDB Atlas</strong> (cloud database) and images are stored in <strong>Cloudinary</strong> (cloud image hosting).</li>
+            <li>Access to admin features is protected by secure authentication and authorization.</li>
+        </ul>
+        <h2>Third-Party Services</h2>
+        <ul>
+            <li><strong>MongoDB Atlas:</strong> Used for secure cloud data storage. <a href="https://www.mongodb.com/legal/privacy-policy" target="_blank">View MongoDB Atlas Privacy Policy</a></li>
+            <li><strong>Cloudinary:</strong> Used for secure image hosting. <a href="https://cloudinary.com/privacy" target="_blank">View Cloudinary Privacy Policy</a></li>
+            <li><strong>Vercel:</strong> Our hosting provider. <a href="https://vercel.com/legal/privacy-policy" target="_blank">View Vercel Privacy Policy</a></li>
+        </ul>
+        <h2>Your Rights</h2>
+        <ul>
+            <li>You may request access to, correction of, or deletion of your personal information by contacting us at the email below.</li>
+            <li>We do not sell your personal information to third parties.</li>
+        </ul>
+        <h2>Contact Us</h2>
+        <p>If you have any questions or concerns about this Privacy Policy or your data, please contact:</p>
+        <p><strong>Jakob Espeland</strong><br>Email: <a href="mailto:info@fortunecapitalgroup.com">info@fortunecapitalgroup.com</a></p>
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section footer-quick-links-container">
+                <div class="footer-quick-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="team.html">Our Team</a></li>
+                        <li><a href="closings.html">Closed Deals</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/company/fortunecapital-group/" title="LinkedIn" target="_blank">in</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Office Location</h3>
+                <p>123 Business Ave, Suite 100<br>
+                New York, NY 10001<br>
+                United States</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Fortune Capital Group. All rights reserved. <span style="margin-left:1em;"><a href="privacy.html" style="color:#000;text-decoration:underline;">Privacy Policy</a></span></p>
+        </div>
+    </footer>
+    <script>
+    // Set last updated date
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString();
+    </script>
+</body>
+</html> 
