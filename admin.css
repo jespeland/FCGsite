@@ -39,6 +39,7 @@ body {
     text-align: center;
     color: #e7bd6f;
     margin-bottom: 2rem;
+    font-family: 'josefin sans', sans-serif;
 }
 
 .form-group {
@@ -48,8 +49,9 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #2c3e50;
+    color: #e7bd6f;
     font-weight: 500;
+    font-family: 'Cardo', serif;
 }
 
 .form-group input {
