@@ -257,8 +257,11 @@ body {
 }
 
 .feature h3 {
-    color: #e7bd6f;
+    color: #000;
     margin-bottom: 1rem;
+    text-decoration: underline;
+    text-decoration-color: #e7bd6f;
+    text-underline-offset: 0.3em;
 }
 
 .feature p {
