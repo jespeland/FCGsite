@@ -152,7 +152,7 @@ body {
 }
 
 .mission-card p, .vision-card p {
-    color: #fff;
+    color: #000;
 }
 
 .values {
@@ -187,13 +187,16 @@ body {
 }
 
 .value-item h4 {
-    color: #e7bd6f;
+    color: #000;
     margin-bottom: 0.5rem;
     font-size: 1.2rem;
+    text-decoration: underline;
+    text-decoration-color: #e7bd6f;
+    text-underline-offset: 0.3em;
 }
 
 .value-item p {
-    color: #fff;
+    color: #000;
 }
 
 /* Footer */
