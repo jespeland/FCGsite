@@ -176,7 +176,7 @@ body {
 .value-item {
     text-align: center;
     padding: 1.5rem;
-    background-color: #000;
+    background-color: #f8f9fa;
     border-radius: 8px;
     border-left: 4px solid #e7bd6f;
     transition: transform 0.3s ease;
