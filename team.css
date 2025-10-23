@@ -144,8 +144,13 @@ body {
     gap: 2rem;
 }
 
-.member-photo-horizontal {
+.member-photo-section {
     flex: 0 0 300px;
+    text-align: center;
+}
+
+.member-photo-horizontal {
+    width: 300px;
     height: 400px;
     background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
     display: flex;
@@ -157,6 +162,7 @@ body {
     border: 3px solid #000;
     border-radius: 8px;
     overflow: hidden;
+    margin-bottom: 1rem;
 }
 
 .member-image-horizontal {
@@ -169,6 +175,8 @@ body {
 .member-info-horizontal {
     flex: 1;
     padding: 1rem 0;
+    display: flex;
+    align-items: center;
 }
 
 .member-name {
@@ -328,16 +336,20 @@ body {
         flex-direction: column;
         text-align: center;
     }
-    .member-photo-horizontal {
+    .member-photo-section {
         flex: none;
+        width: 100%;
+    }
+    .member-photo-horizontal {
         width: 250px;
         height: 300px;
-        margin: 0 auto;
+        margin: 0 auto 1rem auto;
         font-size: 2rem;
     }
     .member-info-horizontal {
         text-align: center;
         padding: 1rem;
+        align-items: flex-start;
     }
     .footer-content {
         grid-template-columns: 1fr;
