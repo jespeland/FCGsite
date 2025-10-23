@@ -136,46 +136,39 @@ body {
     font-size: 2rem;
 }
 
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+/* Vertical Team Member Layout */
+.team-member-vertical {
+    margin-bottom: 4rem;
+    text-align: center;
 }
 
-.team-member {
-    background-color: #f8f9fa;
-    border-radius: 8px;
+.member-photo-vertical {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem auto;
+    border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.team-member:hover {
-    transform: translateY(-5px);
-}
-
-.member-photo {
-    width: 100%;
-    height: 350px;
     background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 3rem;
+    color: #666;
+    font-size: 2rem;
     font-weight: bold;
+    border: 3px solid #000;
 }
 
-.member-image {
+.member-image-vertical {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-.member-info {
-    padding: 1.5rem;
+.member-info-vertical {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
 }
 
 .member-name {
@@ -331,8 +324,14 @@ body {
     .page-header h1 {
         font-size: 2rem;
     }
-    .team-grid {
-        grid-template-columns: 1fr;
+    .member-photo-vertical {
+        width: 150px;
+        height: 150px;
+        font-size: 1.5rem;
+    }
+    .member-info-vertical {
+        text-align: center;
+        padding: 0 1rem;
     }
     .footer-content {
         grid-template-columns: 1fr;
