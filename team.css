@@ -136,39 +136,39 @@ body {
     font-size: 2rem;
 }
 
-/* Vertical Team Member Layout */
-.team-member-vertical {
+/* Horizontal Team Member Layout */
+.team-member-horizontal {
+    display: flex;
+    align-items: flex-start;
     margin-bottom: 4rem;
-    text-align: center;
+    gap: 2rem;
 }
 
-.member-photo-vertical {
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 2rem auto;
-    border-radius: 50%;
-    overflow: hidden;
+.member-photo-horizontal {
+    flex: 0 0 300px;
+    height: 400px;
     background: linear-gradient(135deg, #f3f3f3, #e0e0e0);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #666;
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: bold;
     border: 3px solid #000;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.member-image-vertical {
+.member-image-horizontal {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-.member-info-vertical {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: left;
+.member-info-horizontal {
+    flex: 1;
+    padding: 1rem 0;
 }
 
 .member-name {
@@ -324,14 +324,20 @@ body {
     .page-header h1 {
         font-size: 2rem;
     }
-    .member-photo-vertical {
-        width: 150px;
-        height: 150px;
-        font-size: 1.5rem;
-    }
-    .member-info-vertical {
+    .team-member-horizontal {
+        flex-direction: column;
         text-align: center;
-        padding: 0 1rem;
+    }
+    .member-photo-horizontal {
+        flex: none;
+        width: 250px;
+        height: 300px;
+        margin: 0 auto;
+        font-size: 2rem;
+    }
+    .member-info-horizontal {
+        text-align: center;
+        padding: 1rem;
     }
     .footer-content {
         grid-template-columns: 1fr;
